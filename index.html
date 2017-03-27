@@ -1,70 +1,367 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+<title>Web SDK Sample</title>
+<style>
+* {box-sizing: border-box;}
+.clearfix        {zoom: 1;}
+.clearfix:before {content: ""; display: table;}
+.clearfix:after  {content: ""; display: table; clear: both;}
 
-  <link rel="shortcut icon" href="https://s3.amazonaws.com/sendbird-static/favicon/favicon.ico" type="image/x-icon">
+.base {
+    position: relative;
+    margin: 100px auto 0;
+    width: 900px;
+    height: 600px;
+    border: 1px solid #888;
+    border-radius: 5px;
+}
+.base h1 {
+    display: block;
+    background: #EFE;
+    text-align: center;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+.base .msg {
+    width: 100%;
+    height: 530px;
+    overflow-y:auto; 
+    padding: 0 20px;
+}
+.base .input_bar {
+    position: absolute;
+    margin: 0 auto;
+    width: 900px;
+    bottom: 0;
+}
+.base .input_bar input{
+    width: 898px;
+    border: 1px solid #888;
+    border-radius: 5px;
+    height: 20px;
+}
 
-  <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
+</style>
+<script src="static/lib/SendBird.min.js"></script>
+<script src="static/js/jquery-1.11.3.min.js"></script>
+<!-- <script src="static/js/util.js"></script> -->
+<!-- <script src="static/js/index.js"></script> -->
+<script>
 
-  <!--<link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">-->
-  <!--<link rel="stylesheet" href="/static/css/sample-index.css">-->
-  <link rel="stylesheet" href="static/bootstrap/bootstrap.min.css">
-  <link rel="stylesheet" href="static/css/sample-index.css">
+var appId = '9DA1B1F4-0BE6-4DA8-82C5-2E81DAB56F23';
+var currScrollHeight = 0;
+var MESSAGE_TEXT_HEIGHT = 27;
 
-  <title>Web SDK Sample</title>
+var nickname = null;
+var userId = null;
+var channelListPage = 0;
+var currChannelUrl = null;
+var currChannelInfo = null;
+var leaveChannelUrl = '';
+var leaveMessagingChannelUrl = '';
+var hideChannelUrl = '';
+var userListToken = '';
+var userListNext = 0;
+var targetAddGroupChannel = null;
+
+var isOpenChat = false;
+var memberList = [];
+
+// 3.0.x
+var currentUser;
+
+$(function () {
+    var sb = new SendBird({
+        appId: appId
+    });  
+    console.log('sb = ', sb);
+    
+    sb.connect(userId, function(user, error) {
+        console.log('user, error', user, error);
+    });
+});
+</script>
+
 </head>
 <body class="sample-background">
-  <div class="container">
-    <div class="row">
-
-      <!-- top -->
-      <div class="index-section index-top">
-        <div class="text-sort text-sort--right">
-          <!--<img src="/static/img/logo_landing.svg">-->
-          <img src="static/img/logo_landing.svg">
-        </div>
-        <div class="text-sort text-sort--left">
-          <label class="index-title">Sample Chat</label>
-        </div>
-      </div>
-
-      <!-- user info -->
-      <div class="index-section index-input">
-        <input type="text" class="index-userid" placeholder="Enter User ID" id="user_id"> <br /> <br />
-        <input type="text" class="index-nickname" maxlength="12" placeholder="Enter User nickname" id="user_nickname">
-        <button type="button" class="index-button" id="btn_start">DONE</button>
-      </div>
-
-      <!-- description -->
-      <div class="index-section index-text">
-        Start chatting on SendBird by choosing your display name.<br>
-        This can be changed anytime and will be shown on 1-on-1 and group messaging.
-        <br />
-        <br />
-        <a href="https://github.com/smilefam/SendBird-JavaScript/" class="download-sample">Download Sample</a>
-      </div>
-
-      <div class="index-section index-bottom">
-        <!--<img src="/static/img/image-landing-01.png" width="624">-->
-        <img src="static/img/image-landing-01.png" width="624">
-      </div>
+<div class='base'>
+    <h1>SendBird 測試</h1>
+    <div class="msg">
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
+        a<br>
 
     </div>
-  </div>
-  <div style="text-align: center;">
-    <!--<img src="/static/img/image-landing-02.png" width="960">-->
-    <img src="static/img/image-landing-02.png" width="960">
-  </div>
-
-  <!--<script src="/static/js/jquery-1.11.3.min.js"></script>-->
-  <!--<script src="/static/js/util.js"></script>-->
-  <!--<script src="/static/js/index.js"></script>-->
-  <script src="static/js/jquery-1.11.3.min.js"></script>
-  <script src="static/js/util.js"></script>
-  <script src="static/js/index.js"></script>
-
-
+    <div class='input_bar'><input type='text' id='text'></div>
+</div>
 </body>
 </html>
