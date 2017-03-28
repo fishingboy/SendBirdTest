@@ -12,7 +12,30 @@
 .clearfix:before {content: ""; display: table;}
 .clearfix:after  {content: ""; display: table; clear: both;}
 
+
+.chat_user {
+    margin: 10 auto; 
+    width: 900px;
+    margin: 0 auto;
+}
+.input_row {
+    display: inline-block;
+}
+.input_row input {
+    border-radius: 5px;
+    height: 30px;
+    border: 1px solid #888;
+}
+.chat_user button {
+    border-radius: 5px;
+    height: 30px;
+    border: 1px solid #888;
+    color: #fff;
+}
+
+
 .base {
+    display: none;
     position: relative;
     margin: 100px auto 0;
     width: 900px;
@@ -82,8 +105,8 @@ var appId = 'B131BD21-D8DB-4618-A3AE-E5FD2C9FCF41';
 var currScrollHeight = 0;
 var MESSAGE_TEXT_HEIGHT = 27;
 
-var nickname = 'Leo1';
-var userId = 'Leo1';
+var nickname = 'Leo7';
+var userId = 'Leo7';
 var channelListPage = 0;
 // 有人在家嗎？
 // var currChannelUrl = 'sendbird_open_channel_15742_ab9b2f90df2323c3f1004c6b280d7b3587e92359';
@@ -103,142 +126,157 @@ var memberList = [];
 // 3.0.x
 var currentUser;
 
+
 $(function () {
-    // 初始化
-    var sb = new SendBird({
-        appId: appId
-    });  
-    console.log('sb = ', sb);
-    
-    // 使用者連線
-    sb.connect(userId, function(user, error) {
-        console.log('sb.connect.user = ', user);
-        console.log('sb.connect.error = ', error);
-    
-        // 換使用者圖
-        var profileUrl = 'http://wx.qlogo.cn/mmopen/SsXyyVaRL50qj9uF9Gux81qPibSyL0mWMlx9quGYnwdsxZzz3iawR7vI2No7boibJAiaP5NbXp6FdRHxUokdFbhuHpiaB2iclY6puq/132';
-        sb.updateCurrentUserInfo(nickname, profileUrl, function(response, error) {
-          console.log('sb.updateCurrentUserInfo.response = ', response);
-          console.log('sb.updateCurrentUserInfo.error = ', error);
-        });    
+    $('#start').bind('click', function () {
+        // 初始化
+        var sb = new SendBird({
+            appId: appId
+        });  
+        console.log('sb = ', sb);
+        
+        userId   = $('#userid').val();
+        nickname = $('#nickname').val();
+        console.log('userId, nickname = ', userId, nickname);
+
+        // 使用者連線
+        sb.connect(userId, function(user, error) {
+            console.log('sb.connect.user = ', user);
+            console.log('sb.connect.error = ', error);
+        
+            // 換使用者圖
+            var profileUrl = 'http://wx.qlogo.cn/mmopen/SsXyyVaRL50qj9uF9Gux81qPibSyL0mWMlx9quGYnwdsxZzz3iawR7vI2No7boibJAiaP5NbXp6FdRHxUokdFbhuHpiaB2iclY6puq/132';
+            sb.updateCurrentUserInfo(nickname, profileUrl, function(response, error) {
+              console.log('sb.updateCurrentUserInfo.response = ', response);
+              console.log('sb.updateCurrentUserInfo.error = ', error);
+            });    
 
 
-        // 抓頻道
-        var openChannelListQuery = sb.OpenChannel.createOpenChannelListQuery();
+            // 抓頻道
+            var openChannelListQuery = sb.OpenChannel.createOpenChannelListQuery();
 
-        console.log('openChannelListQuery', openChannelListQuery);
-        openChannelListQuery.next(function (channels, error) {
-            if (error) {
-                console.log(error);
-                return;
-            }
-
-            console.log(channels);
-
-            for (i in channels) {
-                var channel = channels[i];
-                console.log(channel);
-                $("<div class='menu_item' url='" + channel.url + "'>" + channel.name + "</div>").appendTo("#menu");
-            }
-        });
-
-        // sb.OpenChannel.getChannel(channelUrl, function(channel, error) {
-        //     if(error) {
-        //         console.error(error);
-        //         return;
-        //     }
-
-        //     // Successfully fetched the channel.
-        //     console.log(channel);
-        // });
-
-
-        var channelUrl = currChannelUrl;
-        console.log('channelUrl =', channelUrl);
-        sb.OpenChannel.getChannel(channelUrl, function (channel, error) {
-            if (error) {
-                console.error(error);
-                return;
-            }
-
-            // 進入 open 頻道
-            channel.enter(function(response, error){
-                console.log('channel.enter.response = ', response);
-                console.log('channel.enter.error = ', error);
+            console.log('openChannelListQuery', openChannelListQuery);
+            openChannelListQuery.next(function (channels, error) {
                 if (error) {
-                    console.error(error);
+                    console.log(error);
                     return;
+                }
+
+                console.log(channels);
+
+                for (i in channels) {
+                    var channel = channels[i];
+                    console.log(channel);
+                    $("<div class='menu_item' url='" + channel.url + "'>" + channel.name + "</div>").appendTo("#menu");
                 }
             });
 
-            window.channel = channel;
-
-            // 傳送訊息
-            // var message = 'Hello world!';
-            // var data = null;
-            // var customType = null;
-            // channel.sendUserMessage(message, data, customType, function(message, error){
-            //     if (error) {
+            // sb.OpenChannel.getChannel(channelUrl, function(channel, error) {
+            //     if(error) {
             //         console.error(error);
             //         return;
             //     }
 
-            //     // onSent
-            //     console.log(message);
+            //     // Successfully fetched the channel.
+            //     console.log(channel);
             // });
 
-        });
 
-        // 斷線
-        var ChannelHandler = new sb.ChannelHandler();
+            var channelUrl = currChannelUrl;
+            console.log('channelUrl =', channelUrl);
+            sb.OpenChannel.getChannel(channelUrl, function (channel, error) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
 
-        ChannelHandler.onMessageReceived = function(channel, message){
-            // console.log('ChannelHandler.onMessageReceived = ', channel, message);
-            // console.log('ChannelHandler.onMessageReceived = ', channel, message);
-            console.log('message = ', message.message);
-            var html = "<div>"  + message._sender.nickname + ": " + message.message + "</div>";
-            $(html).appendTo('#msg');
-
-            $('#msg').scrollTop($('#msg').height());
-        };
-
-        var UNIQUE_HANDLER_ID = 'aaa123';
-        sb.addChannelHandler(UNIQUE_HANDLER_ID, ChannelHandler);
-
-        // sb.disconnect(function(){
-        //     // You are disconnected from SendBird.
-        // });
-        // 
-        $('#text').bind('keyup', function (event) {
-            if (event.keyCode == 13) {
-                var message = $('#text').val();
-                $('#text').val('');
-                var data = null;
-                var customType = null;
-                channel.sendUserMessage(message, data, customType, function(message, error){
+                // 進入 open 頻道
+                channel.enter(function(response, error){
+                    console.log('channel.enter.response = ', response);
+                    console.log('channel.enter.error = ', error);
                     if (error) {
                         console.error(error);
                         return;
                     }
-        
-                    var html = "<div>"  + message._sender.nickname + ": " + message.message + "</div>";
-                    $(html).appendTo('#msg');
-
-
-                    $('#msg').scrollTop($('#msg').height());
-
-                    // onSent
-                    console.log(message);
                 });
 
-            }
+                window.channel = channel;
+
+                // 傳送訊息
+                // var message = 'Hello world!';
+                // var data = null;
+                // var customType = null;
+                // channel.sendUserMessage(message, data, customType, function(message, error){
+                //     if (error) {
+                //         console.error(error);
+                //         return;
+                //     }
+
+                //     // onSent
+                //     console.log(message);
+                // });
+
+            });
+
+            // 斷線
+            var ChannelHandler = new sb.ChannelHandler();
+
+            ChannelHandler.onMessageReceived = function(channel, message){
+                // console.log('ChannelHandler.onMessageReceived = ', channel, message);
+                // console.log('ChannelHandler.onMessageReceived = ', channel, message);
+                console.log('message = ', message.message);
+                var html = "<div>"  + message._sender.nickname + ": " + message.message + "</div>";
+                $(html).appendTo('#msg');
+
+                $('#msg').scrollTop($('#msg').height());
+            };
+
+            var UNIQUE_HANDLER_ID = 'aaa123';
+            sb.addChannelHandler(UNIQUE_HANDLER_ID, ChannelHandler);
+
+            // sb.disconnect(function(){
+            //     // You are disconnected from SendBird.
+            // });
+            // 
+            $('#text').bind('keyup', function (event) {
+                if (event.keyCode == 13) {
+                    var message = $('#text').val();
+                    $('#text').val('');
+                    var data = null;
+                    var customType = null;
+                    channel.sendUserMessage(message, data, customType, function(message, error){
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+            
+                        var html = "<div>"  + message._sender.nickname + ": " + message.message + "</div>";
+                        $(html).appendTo('#msg');
+
+
+                        $('#msg').scrollTop($('#msg').height());
+
+                        // onSent
+                        console.log(message);
+                    });
+
+                }
+            });
         });
+        
+        $(".chat_user").slideUp();
+        $(".base").slideDown();
     });
 });
 </script>
 
 </head>
-<body class="sample-background">
+<body>
+<div class="chat_user">
+    <div class="input_row">帳號: <input id='userid' type="text" placeholder="userid" value='Leo7'></div>
+    <div class="input_row">暱稱: <input id='nickname' type="text" placeholder="nickname" value='Leo7'></div>
+    <button id='start'>開始聊天</button>
+</div>
 <div class='base'>
     <h1>SendBird 測試</h1>
     <div class="content clearfix">
