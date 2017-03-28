@@ -85,7 +85,10 @@ var MESSAGE_TEXT_HEIGHT = 27;
 var nickname = 'Leo1';
 var userId = 'Leo1';
 var channelListPage = 0;
-var currChannelUrl = 'sendbird_open_channel_15742_ab9b2f90df2323c3f1004c6b280d7b3587e92359';
+// 有人在家嗎？
+// var currChannelUrl = 'sendbird_open_channel_15742_ab9b2f90df2323c3f1004c6b280d7b3587e92359';
+// 你媽最正點！
+var currChannelUrl = "sendbird_open_channel_15742_0a55f1720986d1826b56c4095ed5be415e5962b7";
 var currChannelInfo = null;
 var leaveChannelUrl = '';
 var leaveMessagingChannelUrl = '';
@@ -168,26 +171,63 @@ $(function () {
                 }
             });
 
-            // 傳送訊息
-            var message = 'Hello world!';
-            var data = null;
-            var customType = null;
-            channel.sendUserMessage(message, data, customType, function(message, error){
-                if (error) {
-                    console.error(error);
-                    return;
-                }
+            window.channel = channel;
 
-                // onSent
-                console.log(message);
-            });
+            // 傳送訊息
+            // var message = 'Hello world!';
+            // var data = null;
+            // var customType = null;
+            // channel.sendUserMessage(message, data, customType, function(message, error){
+            //     if (error) {
+            //         console.error(error);
+            //         return;
+            //     }
+
+            //     // onSent
+            //     console.log(message);
+            // });
 
         });
 
         // 斷線
+        var ChannelHandler = new sb.ChannelHandler();
+
+        ChannelHandler.onMessageReceived = function(channel, message){
+            // console.log('ChannelHandler.onMessageReceived = ', channel, message);
+            // console.log('ChannelHandler.onMessageReceived = ', channel, message);
+            console.log('message = ', message.message);
+            var html = "<div>"  + message._sender.nickname + ": " + message.message + "</div>";
+            $(html).appendTo('#msg');
+        };
+
+        var UNIQUE_HANDLER_ID = 'aaa123';
+        sb.addChannelHandler(UNIQUE_HANDLER_ID, ChannelHandler);
+
         // sb.disconnect(function(){
         //     // You are disconnected from SendBird.
         // });
+        // 
+        $('#text').bind('keyup', function (event) {
+            if (event.keyCode == 13) {
+                var message = $('#text').val();
+                $('#text').val('');
+                var data = null;
+                var customType = null;
+                channel.sendUserMessage(message, data, customType, function(message, error){
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+        
+                    var html = "<div>"  + message._sender.nickname + ": " + message.message + "</div>";
+                    $(html).appendTo('#msg');
+
+                    // onSent
+                    console.log(message);
+                });
+
+            }
+        });
     });
 });
 </script>
@@ -198,12 +238,12 @@ $(function () {
     <h1>SendBird 測試</h1>
     <div class="content clearfix">
         <div id='menu' class="menu">
-            <div class="menu_title">menu</div>
+            <div class="menu_title">Channel:</div>
             <div class="menu_items">
                 <div class="menu_item"></div>
             </div>
         </div>
-        <div id='msg' class="msg">暫無訊息</div>
+        <div id='msg' class="msg"></div>
     </div>
     <div class='input_bar'><input type='text' id='text'></div>
 </div>
