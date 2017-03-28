@@ -38,6 +38,16 @@
     float: left;
     background: #EEF; 
 }
+.menu_title {
+    font-weight: bold;
+    font-size: 18px;
+}
+.menu_items {
+
+}
+.menu_item {
+
+}
 .base .content .msg {
     float: right;
     height: calc(var(--base_height) - 83px);
@@ -75,7 +85,7 @@ var MESSAGE_TEXT_HEIGHT = 27;
 var nickname = 'Leo1';
 var userId = 'Leo1';
 var channelListPage = 0;
-var currChannelUrl = null;
+var currChannelUrl = 'sendbird_open_channel_15742_ab9b2f90df2323c3f1004c6b280d7b3587e92359';
 var currChannelInfo = null;
 var leaveChannelUrl = '';
 var leaveMessagingChannelUrl = '';
@@ -125,9 +135,39 @@ $(function () {
             for (i in channels) {
                 var channel = channels[i];
                 console.log(channel);
+                $("<div class='menu_item' url='" + channel.url + "'>" + channel.name + "</div>").appendTo("#menu");
             }
         });
-            
+
+        // sb.OpenChannel.getChannel(channelUrl, function(channel, error) {
+        //     if(error) {
+        //         console.error(error);
+        //         return;
+        //     }
+
+        //     // Successfully fetched the channel.
+        //     console.log(channel);
+        // });
+
+
+        var channelUrl = currChannelUrl;
+        console.log('channelUrl =', channelUrl);
+        sb.OpenChannel.getChannel(channelUrl, function (channel, error) {
+            if (error) {
+                console.error(error);
+                return;
+            }
+
+            channel.enter(function(response, error){
+                console.log('channel.enter.response = ', response);
+                console.log('channel.enter.error = ', error);
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+            });
+        });
+
         // 斷線
         // sb.disconnect(function(){
         //     // You are disconnected from SendBird.
@@ -141,8 +181,13 @@ $(function () {
 <div class='base'>
     <h1>SendBird 測試</h1>
     <div class="content clearfix">
-        <div class="msg">暫無訊息</div>
-        <div class="menu">menu</div>
+        <div id='menu' class="menu">
+            <div class="menu_title">menu</div>
+            <div class="menu_items">
+                <div class="menu_item"></div>
+            </div>
+        </div>
+        <div id='msg' class="msg">暫無訊息</div>
     </div>
     <div class='input_bar'><input type='text' id='text'></div>
 </div>
