@@ -86,9 +86,9 @@ var nickname = 'Leo1';
 var userId = 'Leo1';
 var channelListPage = 0;
 // 有人在家嗎？
-var currChannelUrl = 'sendbird_open_channel_15742_ab9b2f90df2323c3f1004c6b280d7b3587e92359';
+// var currChannelUrl = 'sendbird_open_channel_15742_ab9b2f90df2323c3f1004c6b280d7b3587e92359';
 // 你媽最正點！
-// var currChannelUrl = "sendbird_open_channel_15742_0a55f1720986d1826b56c4095ed5be415e5962b7";
+var currChannelUrl = "sendbird_open_channel_15742_0a55f1720986d1826b56c4095ed5be415e5962b7";
 var currChannelInfo = null;
 var leaveChannelUrl = '';
 var leaveMessagingChannelUrl = '';
@@ -198,6 +198,8 @@ $(function () {
             console.log('message = ', message.message);
             var html = "<div>"  + message._sender.nickname + ": " + message.message + "</div>";
             $(html).appendTo('#msg');
+
+            $('#msg').scrollTop($('#msg').height());
         };
 
         var UNIQUE_HANDLER_ID = 'aaa123';
@@ -221,6 +223,9 @@ $(function () {
         
                     var html = "<div>"  + message._sender.nickname + ": " + message.message + "</div>";
                     $(html).appendTo('#msg');
+
+
+                    $('#msg').scrollTop($('#msg').height());
 
                     // onSent
                     console.log(message);
