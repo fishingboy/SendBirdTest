@@ -224,7 +224,13 @@ $(function () {
             ChannelHandler.onMessageReceived = function(channel, message){
                 // console.log('ChannelHandler.onMessageReceived = ', channel, message);
                 // console.log('ChannelHandler.onMessageReceived = ', channel, message);
+                console.log('channel = ', channel);
                 console.log('message = ', message.message);
+
+                if (channel.url != currChannelUrl) {
+                    return false;
+                }
+
                 var html = "<div>"  + message._sender.nickname + ": " + message.message + "</div>";
                 $(html).appendTo('#msg');
 
